@@ -5,7 +5,7 @@ use fastbloom_rs::FilterBuilder as FastBloomFilter;
 fn read_input() -> Vec<String> {
     const FILENAME: &str = "input.txt";
     let mut input = Vec::new();
-    let mut file = File::open(FILENAME).unwrap();
+    let mut file = File::open(FILENAME).expect("Run cargo test first, to generate input.txt");
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
     for line in contents.lines() {
@@ -32,7 +32,7 @@ fn bench_bfs_insert(c: &mut Criterion) {
     const FILTER_SIZE: usize = 1024 * 1024 * 8;
     let input = read_input();
     let input = input.iter().map(|s| s.as_bytes()).collect::<Vec<&[u8]>>();
-    group.bench_function("bloomy_ins", |b| {
+    group.bench_function("bloomy/insert", |b| {
         // iter_batched here was not working, so I had to do this
         // to be more precise, the process of building was killed after some amount of time
         // I think the problem was because of stack overflow or something like that
@@ -46,7 +46,7 @@ fn bench_bfs_insert(c: &mut Criterion) {
             }
         })
     });
-    group.bench_function("fastbloom_ins", |b| {
+    group.bench_function("fastbloom/insert", |b| {
         b.iter_batched(
             || {
                 FastBloomFilter::new(input.len() as u64, false_pos_prob(FILTER_SIZE, input.len()))
@@ -63,7 +63,7 @@ fn bench_bfs_insert(c: &mut Criterion) {
     group.finish();
 }
 
-fn bench_bfs_contains_exist(c: &mut Criterion) {
+fn bench_bfs_contains_existing(c: &mut Criterion) {
     let mut group = c.benchmark_group("BloomFilter");
     const FILTER_SIZE: usize = 1024 * 1024 * 8;
     let input = read_input();
@@ -78,14 +78,14 @@ fn bench_bfs_contains_exist(c: &mut Criterion) {
     for word in &input {
         fbf.add(word);
     }
-    group.bench_function("bloomy_cont_exist", |b| {
+    group.bench_function("bloomy/contains_existing", |b| {
         b.iter(|| {
             for word in &input {
                 bf.contains(word);
             }
         })
     });
-    group.bench_function("fastbloom_cont_exist", |b| {
+    group.bench_function("fastbloom/contains_existing", |b| {
         b.iter(|| {
             for word in &input {
                 fbf.contains(word);
@@ -95,7 +95,7 @@ fn bench_bfs_contains_exist(c: &mut Criterion) {
     group.finish();
 }
 
-fn bench_bfs_contains_notexist(c: &mut Criterion) {
+fn bench_bfs_contains_non_existing(c: &mut Criterion) {
     let mut group = c.benchmark_group("BloomFilter");
     const FILTER_SIZE: usize = 1024 * 32;
     let input = read_input();
@@ -115,14 +115,14 @@ fn bench_bfs_contains_notexist(c: &mut Criterion) {
     for word in &input {
         fbf.add(word);
     }
-    group.bench_function("bloomy_cont_nexist", |b| {
+    group.bench_function("bloomy/contains_non_existing", |b| {
         b.iter(|| {
             for word in &to_check {
                 bf.contains(word);
             }
         })
     });
-    group.bench_function("fastbloom_cont_nexist", |b| {
+    group.bench_function("fastbloom/contains_non_existing", |b| {
         b.iter(|| {
             for word in &to_check {
                 fbf.contains(word);
@@ -135,7 +135,7 @@ fn bench_bfs_contains_notexist(c: &mut Criterion) {
 criterion_group!(
     benches,
     bench_bfs_insert,
-    bench_bfs_contains_exist,
-    bench_bfs_contains_notexist
+    bench_bfs_contains_existing,
+    bench_bfs_contains_non_existing
 );
 criterion_main!(benches);
