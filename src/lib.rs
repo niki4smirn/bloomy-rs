@@ -144,3 +144,31 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+mod gen_data_for_bench {
+    use rand::Rng;
+    const INPUT_SIZE: usize = 10000;
+    use std::fs::File;
+    use std::io::prelude::*;
+
+    use std::path::Path;
+
+    #[test]
+    fn write_input() {
+        const FILENAME: &str = "input.txt";
+        if Path::new(FILENAME).exists() {
+            return;
+        }
+        let mut file = File::create(FILENAME).unwrap();
+        for _ in 0..INPUT_SIZE {
+            let str_len = rand::thread_rng().gen_range(10..100);
+            let mut val = String::new();
+            for _ in 0..str_len {
+                val.push(rand::thread_rng().gen_range('a'..'z'));
+            }
+            file.write_all(val.as_bytes()).unwrap();
+            file.write_all("\n".as_bytes()).unwrap();
+        }
+    }
+}

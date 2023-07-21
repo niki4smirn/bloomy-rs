@@ -10,3 +10,9 @@ ahash = "0.8.3"
 
 [dev-dependencies]
 rand = "0.8.5"
+fastbloom-rs = "0.5.4"
+criterion = "0.5.1"
+
+[[bench]]
+name = "bench"
+harness = false
