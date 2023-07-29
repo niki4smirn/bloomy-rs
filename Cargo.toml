@@ -6,7 +6,7 @@ license = "MIT"
 description = "Fast bloom filter implementation"
 repository = "https://github.com/niki4smirn/bloomy-rs"
 readme = "README.md"
-keywords = ["bloom", "filter", "bloom filter", "bloom-filter", "bloomfilter"]
+keywords = ["bloom", "filter", "bloom-filter", "bloomfilter"]
 categories = ["data-structures", "algorithms"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
