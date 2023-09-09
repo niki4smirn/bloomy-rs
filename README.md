@@ -14,3 +14,7 @@ Stack-based alternative of [fastbloom-rs](https://github.com/yankun1992/fastbloo
 
 ---
 Made with [criterion-table](https://github.com/nu11ptr/criterion-table)
+
+### WARNING
+
+It works only with nightly toolchain, because of #![feature(generic_const_exprs)].
